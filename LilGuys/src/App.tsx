@@ -7,52 +7,46 @@ function App() {
 
   
 
-  const [timerHours, setTimerHours] = useState(1);
+  const [timerHours, setTimerHours] = useState(0);
   const [timerMinutes, setTimerMinutes] = useState(0);
-  const [timerSeconds, setTimerSeconds] = useState(0);
+  const [timerSeconds, setTimerSeconds] = useState(10);
 
   const [isVisible,setVisible] = useState(true);
-
+  const [endTime,setEndTime] = useState(Date.now()+10000);
   let interval = useRef<number | null>(null);
   const [clickCount, setClickCount] = useState(0);
 
   const startTimer=()=>{
     clickCount + 1;
-    const endTime = Date.now() + 1 * 60 * 60 * 1000;
-
     interval.current = setInterval(() => {
       const now = Date.now();
       const distance = endTime - now;
 
     if (clickCount > 1){
       if (interval.current !== null){
-        clearInterval(interval.current!);
+        clearInterval(interval.current);
+        interval.current = null;
       }
         setTimerHours(0);
-        setTimerMinutes(0);
+        setTimerMinutes(1);
         setTimerSeconds(0);
         setVisible(false);
       setClickCount(0);
       return;
     }
-
-    if (distance <= 0) {
-     if (interval.current !== null){
-      clearInterval(interval.current);
-    }
-      // setTimerHours(0);
-      // setTimerMinutes(0);
-      // setTimerSeconds(0);
-      // setVisible(false);
-      return;
-    }
-      const hours = Math.floor(distance / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-      setTimerHours(hours);
-      setTimerMinutes(minutes);
-      setTimerSeconds(seconds);
+    else{
+      if (distance <= 0) {
+      if (interval.current !== null){
+        clearInterval(interval.current);
+        interval.current = null;
+      }
+        setTimerHours(0);
+        setTimerMinutes(1);
+        setTimerSeconds(0);
+        setVisible(false);
+        return;
+      }
+  }
     }, 1000);
   };
 
@@ -60,6 +54,8 @@ function App() {
     return () => {
       if (interval.current !== null){
           clearInterval(interval.current);
+          interval.current==null;
+          setEndTime(Date.now()+10000);
         }
       }
   }, []);
@@ -77,7 +73,7 @@ function App() {
 //     startTimer();
 // }
   function sendGuy() {
-    setVisible(false);
+    setVisible(true);
   }
   return (
       <div className="w-180 h-120"> 
